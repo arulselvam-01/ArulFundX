@@ -1,0 +1,1209 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ArulFundX – Mutual Fund Deep Analysis</title>
+  <meta name="description"
+    content="Analyze any Indian mutual fund with deep insights — rolling returns, alpha, beta, Sharpe ratio, CAGR and more. Free, no signup required." />
+  <meta name="keywords"
+    content="mutual fund analysis, India, NAV history, rolling returns, alpha, beta, Sharpe ratio, CAGR" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+    rel="stylesheet" />
+  <link rel="icon" type="image/svg+xml" href="css/img/afx.svg" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body>
+
+  <!-- ===== MARKET TICKER ===== -->
+  <div id="market-ticker" class="market-ticker" role="complementary" aria-label="Live market indices">
+    <div class="ticker-item" id="ticker-nifty">
+      <div class="ticker-top">
+        <span class="ticker-name">NIFTY 50</span>
+        <span class="ticker-price" id="ticker-nifty-price">—</span>
+      </div>
+      <span class="ticker-change" id="ticker-nifty-change">—</span>
+    </div>
+    <div class="ticker-sep"></div>
+    <div class="ticker-item" id="ticker-sensex">
+      <div class="ticker-top">
+        <span class="ticker-name">SENSEX</span>
+        <span class="ticker-price" id="ticker-sensex-price">—</span>
+      </div>
+      <span class="ticker-change" id="ticker-sensex-change">—</span>
+    </div>
+    <div class="ticker-sep"></div>
+    <div class="ticker-item" id="ticker-sp500">
+      <div class="ticker-top">
+        <span class="ticker-name">S&amp;P 500</span>
+        <span class="ticker-price" id="ticker-sp500-price">—</span>
+      </div>
+      <span class="ticker-change" id="ticker-sp500-change">—</span>
+    </div>
+  </div>
+
+  <!-- ===== HOME PAGE ===== -->
+  <div id="home-page" class="page active">
+    <header class="home-header">
+      <div class="logo-wrap">
+        <img class="logo-img" src="css/img/afx.svg" alt="ArulFundX Logo" width="32" height="32" />
+        <span class="logo-text">Arul<span class="accent">FundX</span></span>
+      </div>
+      <!-- Ticker Placeholder for Laptop -->
+      <div id="home-ticker-placeholder" class="ticker-placeholder"></div>
+      <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme" title="Toggle theme">
+        <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          stroke-width="2">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+        </svg>
+        <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          stroke-width="2" style="display:none">
+          <circle cx="12" cy="12" r="5" />
+          <line x1="12" y1="1" x2="12" y2="3" />
+          <line x1="12" y1="21" x2="12" y2="23" />
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+          <line x1="1" y1="12" x2="3" y2="12" />
+          <line x1="21" y1="12" x2="23" y2="12" />
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+        </svg>
+      </button>
+    </header>
+
+    <main class="hero">
+      <div class="hero-content">
+        <div class="hero-badge">🇮🇳 Indian Mutual Funds · Free · No Signup</div>
+        <h1 class="hero-title">
+          Deep Analysis for<br />
+          <span class="gradient-text">Indian Mutual Funds</span>
+        </h1>
+        <p class="hero-subtitle">Rolling returns, alpha, beta, Sharpe ratio, CAGR and more — for any fund, completely
+          free.</p>
+
+        <div class="search-container" id="search-container">
+          <div class="search-input-wrap" id="home-search-wrap">
+            <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2">
+              <circle cx="11" cy="11" r="8" />
+              <line x1="21" y1="21" x2="16.65" y2="16.65" />
+            </svg>
+            <input type="text" id="home-search" class="search-input"
+              placeholder="Search mutual funds… e.g. UTI Nifty 50, Nippon Small Cap" autocomplete="off"
+              spellcheck="false" />
+            <div class="search-spinner" id="home-spinner">
+              <div class="spinner-ring"></div>
+            </div>
+          </div>
+          <div class="search-dropdown" id="home-dropdown" role="listbox"></div>
+        </div>
+
+        <div class="popular-section">
+          <p class="popular-label">Popular Searches</p>
+          <div class="popular-chips" id="popular-chips">
+            <button class="chip" data-code="120716"
+              data-query="UTI Nifty 50 Index Fund - Growth Option- Direct">UTI Nifty 50</button>
+            <button class="chip" data-code="118778"
+              data-query="Nippon India Small Cap Fund - Direct Plan - Growth Plan">Nippon Small Cap</button>
+            <button class="chip" data-code="118989"
+              data-query="HDFC Mid-Cap Opportunities Fund - Direct Plan - Growth Option">HDFC Midcap</button>
+            <button class="chip" data-code="147946"
+              data-query="Bandhan Small Cap Fund - Direct Plan - Growth">Bandhan Small Cap</button>
+            <button class="chip" data-code="118834"
+              data-query="Mirae Asset Large Cap Fund - Direct Plan - Growth Plan">Mirae Large Cap</button>
+            <button class="chip" data-code="122639"
+              data-query="Parag Parikh Flexi Cap Fund - Direct Plan - Growth Plan">Parag Parikh Flexi</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-features">
+        <div class="feature-card">
+          <div class="feature-icon-wrap blue"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2">
+              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+            </svg></div>
+          <div class="feature-text">
+            <h3>Rolling Returns</h3>
+            <p>See every possible N-year period return from inception with stats</p>
+          </div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon-wrap teal"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2">
+              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+            </svg></div>
+          <div class="feature-text">
+            <h3>Alpha Analysis</h3>
+            <p>Year-by-year outperformance vs Nifty 50 from fund inception</p>
+          </div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon-wrap purple"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+            </svg></div>
+          <div class="feature-text">
+            <h3>Risk Metrics</h3>
+            <p>Beta, Sharpe, Sortino, Max Drawdown with visual gauges</p>
+          </div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon-wrap green"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2">
+              <line x1="12" y1="20" x2="12" y2="10" />
+              <line x1="18" y1="20" x2="18" y2="4" />
+              <line x1="6" y1="20" x2="6" y2="16" />
+            </svg></div>
+          <div class="feature-text">
+            <h3>CAGR Analysis</h3>
+            <p>1Y, 3Y, 5Y, 10Y &amp; since inception with annual return table</p>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- ===== ANALYSIS PAGE ===== -->
+  <div id="analysis-page" class="page">
+    <header class="analysis-header">
+      <div class="header-left">
+        <div class="logo-wrap small">
+          <img class="logo-img small-logo" src="css/img/afx.svg" alt="ArulFundX Logo" width="24" height="24" />
+          <span class="logo-text">Arul<span class="accent">FundX</span></span>
+        </div>
+      </div>
+
+      <!-- Ticker Placeholder for Laptop -->
+      <div id="analysis-ticker-placeholder" class="ticker-placeholder"></div>
+
+      <button type="button" class="header-search-toggle" id="header-search-toggle" aria-label="Search funds"
+        aria-expanded="false" aria-controls="header-search-container">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8" />
+          <line x1="21" y1="21" x2="16.65" y2="16.65" />
+        </svg>
+      </button>
+
+      <div class="header-search-container" id="header-search-container">
+        <div class="search-input-wrap compact" id="header-search-wrap">
+          <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2">
+            <circle cx="11" cy="11" r="8" />
+            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+          </svg>
+          <input type="text" id="header-search" class="search-input" placeholder="Search another fund…"
+            autocomplete="off" spellcheck="false" />
+          <div class="search-spinner" id="header-spinner">
+            <div class="spinner-ring"></div>
+          </div>
+        </div>
+        <div class="search-dropdown" id="header-dropdown" role="listbox"></div>
+      </div>
+
+      <button class="theme-toggle" id="theme-toggle-2" aria-label="Toggle theme" title="Toggle theme">
+        <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          stroke-width="2">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+        </svg>
+        <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          stroke-width="2" style="display:none">
+          <circle cx="12" cy="12" r="5" />
+          <line x1="12" y1="1" x2="12" y2="3" />
+          <line x1="12" y1="21" x2="12" y2="23" />
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+          <line x1="1" y1="12" x2="3" y2="12" />
+          <line x1="21" y1="12" x2="23" y2="12" />
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+        </svg>
+      </button>
+    </header>
+
+    <!-- FUND INFO STRIP -->
+    <div class="fund-info-strip" id="fund-info-strip" style="display:none">
+      <div class="fund-info-inner">
+        <div class="fund-name-col">
+          <div class="fund-type-badge" id="fund-type-badge">EQ</div>
+          <div class="fund-title-group">
+            <h2 class="fund-name" id="fund-name">—</h2>
+            <p class="fund-amc" id="fund-amc">—</p>
+          </div>
+        </div>
+        <div class="fund-pills-row" id="fund-pills-row">
+          <div class="info-pill">
+            <span class="pill-label">NAV</span>
+            <span class="pill-value" id="latest-nav">—</span>
+          </div>
+          <div class="info-pill">
+            <span class="pill-label">Inception</span>
+            <span class="pill-value" id="inception-date">—</span>
+          </div>
+          <div class="info-pill">
+            <span class="pill-label">Since Inception</span>
+            <span class="pill-value highlight" id="inception-cagr">—</span>
+          </div>
+          <div class="info-pill">
+            <span class="pill-label">3Y CAGR</span>
+            <span class="pill-value" id="cagr-3y">—</span>
+          </div>
+          <div class="info-pill">
+            <span class="pill-label">5Y CAGR</span>
+            <span class="pill-value" id="cagr-5y">—</span>
+          </div>
+          <div class="info-pill">
+            <span class="pill-label">7Y CAGR</span>
+            <span class="pill-value" id="cagr-7y">—</span>
+          </div>
+          <div class="info-pill">
+            <span class="pill-label">Category</span>
+            <span class="pill-value" id="fund-category">—</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LOADING STATE -->
+    <div id="loading-state" class="center-state" style="display:none">
+      <div class="big-spinner">
+        <div class="spinner-ring lg"></div>
+      </div>
+      <p class="state-text">Fetching fund data…</p>
+      <p class="state-sub">Loading historical NAV from mfapi.in</p>
+    </div>
+
+    <!-- ERROR STATE -->
+    <div id="error-state" class="center-state" style="display:none">
+      <div class="error-icon-wrap">⚠️</div>
+      <p class="state-text" id="error-text">Something went wrong</p>
+      <p class="state-sub" id="error-sub">Please check your connection and try again</p>
+      <button class="retry-btn" id="retry-btn">Try Again</button>
+    </div>
+
+    <!-- TABS SECTION -->
+    <div id="tabs-section" class="tabs-section" style="display:none">
+      <div class="tab-nav-scroll">
+        <nav class="tab-nav" role="tablist" aria-label="Analysis tabs">
+          <button class="tab-btn active" data-tab="overview" role="tab" id="tab-btn-overview" aria-label="Overview" aria-selected="true">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+            </svg>
+            <span class="tab-label">Overview</span>
+          </button>
+          <button class="tab-btn" data-tab="performance" role="tab" id="tab-btn-performance" aria-label="Performance">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="18" y1="20" x2="18" y2="10" />
+              <line x1="12" y1="20" x2="12" y2="4" />
+              <line x1="6" y1="20" x2="6" y2="14" />
+            </svg>
+            <span class="tab-label">Performance</span>
+          </button>
+          <button class="tab-btn priority" data-tab="returns" role="tab" id="tab-btn-returns" aria-label="Period Returns">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="4" width="18" height="16" rx="2" ry="2" />
+              <line x1="16" y1="2" x2="16" y2="6" />
+              <line x1="8" y1="2" x2="8" y2="6" />
+              <line x1="3" y1="10" x2="21" y2="10" />
+            </svg>
+            <span class="tab-label">Period Returns</span>
+          </button>
+          <button class="tab-btn priority" data-tab="yearly" role="tab" id="tab-btn-yearly" aria-label="Yearly Returns">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+            </svg>
+            <span class="tab-label">Yearly Returns</span>
+          </button>
+          <button class="tab-btn priority" data-tab="rolling" role="tab" id="tab-btn-rolling" aria-label="Rolling Returns">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8" />
+              <path d="M21 3v5h-5" />
+            </svg>
+            <span class="tab-label">Rolling Returns</span>
+          </button>
+          <button class="tab-btn" data-tab="risk" role="tab" id="tab-btn-risk" aria-label="Risk">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+            </svg>
+            <span class="tab-label">Risk</span>
+          </button>
+          <button class="tab-btn priority" data-tab="alpha" role="tab" id="tab-btn-alpha" aria-label="Alpha">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+            </svg>
+            <span class="tab-label">Alpha</span>
+          </button>
+          <button class="tab-btn priority" data-tab="ranking" role="tab" id="tab-btn-ranking" aria-label="Ranking">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="8" r="7" />
+              <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88" />
+            </svg>
+            <span class="tab-label">Ranking</span>
+          </button>
+          <button class="tab-btn priority" data-tab="compare" role="tab" id="tab-btn-compare" aria-label="Compare">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="1" y="4" width="9" height="16" rx="1" />
+              <rect x="14" y="4" width="9" height="16" rx="1" />
+              <line x1="12" y1="8" x2="12" y2="16" />
+              <polyline points="9 12 12 9 15 12" />
+            </svg>
+            <span class="tab-label">Compare</span>
+          </button>
+        </nav>
+      </div>
+
+      <!-- TAB CONTENT AREA -->
+      <div class="tab-content-area" id="tab-content-area">
+
+        <!-- OVERVIEW TAB -->
+        <div class="tab-pane active" id="tab-overview" role="tabpanel">
+          <div class="period-bar">
+            <span class="bar-label">Period:</span>
+            <div class="period-btns" id="nav-period-btns">
+              <button class="period-btn" data-period="1m">1M</button>
+              <button class="period-btn" data-period="3m">3M</button>
+              <button class="period-btn" data-period="6m">6M</button>
+              <button class="period-btn active" data-period="1y">1Y</button>
+              <button class="period-btn" data-period="3y">3Y</button>
+              <button class="period-btn" data-period="5y">5Y</button>
+              <button class="period-btn" data-period="7y">7Y</button>
+              <button class="period-btn" data-period="all">All</button>
+            </div>
+          </div>
+
+          <!-- ALL-TIME HIGHS/LOWS GRID -->
+          <div class="stats-grid overview-high-low-grid">
+            <div class="stat-card">
+              <div class="stat-icon-wrap green">🏆</div>
+              <div class="stat-info">
+                <span class="stat-label">All-Time High NAV</span>
+                <span class="stat-val green" id="overview-ath-nav">—</span>
+                <span class="muted-text" id="overview-ath-nav-date">—</span>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon-wrap red">📉</div>
+              <div class="stat-info">
+                <span class="stat-label">All-Time Low NAV</span>
+                <span class="stat-val red" id="overview-atl-nav">—</span>
+                <span class="muted-text" id="overview-atl-nav-date">—</span>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon-wrap blue">⚡</div>
+              <div class="stat-info">
+                <span class="stat-label">Best Daily Return</span>
+                <span class="stat-val green" id="overview-ath-return">—</span>
+                <span class="muted-text" id="overview-ath-return-date">—</span>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon-wrap purple">💥</div>
+              <div class="stat-info">
+                <span class="stat-label">Worst Daily Return</span>
+                <span class="stat-val red" id="overview-atl-return">—</span>
+                <span class="muted-text" id="overview-atl-return-date">—</span>
+              </div>
+            </div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-card-header">
+              <h3 class="chart-title">NAV History</h3>
+              <div id="nav-change-pill" class="change-pill"></div>
+            </div>
+            <div class="chart-wrap h-320">
+              <canvas id="navChart"></canvas>
+            </div>
+          </div>
+          <div class="chart-card mt-4">
+            <div class="chart-card-header">
+              <h3 class="chart-title">Annual Returns</h3>
+              <div id="annual-avg-badge" class="change-pill neutral"></div>
+            </div>
+            <div class="chart-wrap h-260">
+              <canvas id="annualBarChart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- PERFORMANCE TAB -->
+        <div class="tab-pane" id="tab-performance" role="tabpanel">
+          <div class="two-col-grid">
+            <div class="chart-card">
+              <h3 class="chart-title">CAGR Summary</h3>
+              <div class="table-scroll">
+                <table class="data-table" id="cagr-table">
+                  <thead>
+                    <tr>
+                      <th>Period</th>
+                      <th>Fund CAGR</th>
+                      <th>Assessment</th>
+                    </tr>
+                  </thead>
+                  <tbody id="cagr-tbody"></tbody>
+                </table>
+              </div>
+            </div>
+            <div class="chart-card">
+              <h3 class="chart-title">CAGR Chart</h3>
+              <div class="chart-wrap h-240">
+                <canvas id="cagrChart"></canvas>
+              </div>
+            </div>
+          </div>
+          <div class="chart-card mt-4">
+            <h3 class="chart-title">Year-by-Year Annual Returns</h3>
+            <div class="table-scroll">
+              <table class="data-table" id="annual-returns-full">
+                <thead>
+                  <tr>
+                    <th>Year</th>
+                    <th>Start NAV</th>
+                    <th>End NAV</th>
+                    <th>Return %</th>
+                  </tr>
+                </thead>
+                <tbody id="annual-returns-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ROLLING RETURNS TAB -->
+        <div class="tab-pane" id="tab-rolling" role="tabpanel">
+          <div class="tab-intro-row">
+            <div>
+              <h3 class="section-heading">Rolling Returns Analysis</h3>
+              <p class="section-desc">Shows CAGR for every possible investment window of the selected length, from the
+                fund's inception to today.</p>
+            </div>
+            <div class="window-selector">
+              <span class="bar-label">Rolling Window:</span>
+              <div class="period-btns" id="rolling-window-btns">
+                <button class="period-btn" data-window="1">1Y</button>
+                <button class="period-btn active" data-window="3">3Y</button>
+                <button class="period-btn" data-window="5">5Y</button>
+                <button class="period-btn" data-window="7">7Y</button>
+                <button class="period-btn" data-window="10">10Y</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="stats-grid" id="rolling-stats-grid">
+            <div class="stat-card">
+              <div class="stat-icon-wrap green">🏆</div>
+              <div class="stat-info">
+                <span class="stat-label">Best Period</span>
+                <span class="stat-val green" id="roll-best">—</span>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon-wrap red">📉</div>
+              <div class="stat-info">
+                <span class="stat-label">Worst Period</span>
+                <span class="stat-val red" id="roll-worst">—</span>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon-wrap blue">📊</div>
+              <div class="stat-info">
+                <span class="stat-label">Average Return</span>
+                <span class="stat-val blue" id="roll-avg">—</span>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon-wrap teal">✅</div>
+              <div class="stat-info">
+                <span class="stat-label">Positive Periods</span>
+                <span class="stat-val teal" id="roll-positive">—</span>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon-wrap purple">🎯</div>
+              <div class="stat-info">
+                <span class="stat-label">Beat 12% Periods</span>
+                <span class="stat-val purple" id="roll-beat12">—</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="chart-card">
+            <div class="chart-card-header">
+              <h3 class="chart-title">Rolling Return Chart <span class="chart-sub" id="rolling-chart-label">(All
+                  overlapping 3Y windows)</span></h3>
+              <div class="legend-inline">
+                <span class="legend-dot blue"></span><span>Fund Returns</span>
+                <span class="legend-dot orange ml-8"></span><span>12% Benchmark</span>
+              </div>
+            </div>
+            <div class="chart-wrap h-320">
+              <canvas id="rollingChart"></canvas>
+            </div>
+          </div>
+
+          <div class="chart-card mt-4">
+            <h3 class="chart-title">Rolling Period Breakdown <span class="chart-sub"
+                id="rolling-table-label"></span></h3>
+            <div class="table-scroll">
+              <table class="data-table" id="rolling-table">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Period</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Start NAV</th>
+                    <th>End NAV</th>
+                    <th>CAGR %</th>
+                  </tr>
+                </thead>
+                <tbody id="rolling-tbody"></tbody>
+                <tfoot id="rolling-tfoot"></tfoot>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- RISK TAB -->
+        <div class="tab-pane" id="tab-risk" role="tabpanel">
+          <div class="risk-note" id="risk-note">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10" />
+              <line x1="12" y1="8" x2="12" y2="12" />
+              <line x1="12" y1="16" x2="12.01" y2="16" />
+            </svg>
+            <span id="risk-note-text">Risk metrics use monthly returns vs UTI Nifty 50 Index Fund - Growth (Direct) · 120716. HDFC Nifty 50 · 119063 is the alternate benchmark. Risk-free rate: 6.5% p.a.</span>
+          </div>
+
+          <div class="tab-intro-row">
+            <div>
+              <h3 class="section-heading">Risk by Period Window</h3>
+              <p class="section-desc">Non-overlapping windows from inception — periods on the left, risk metrics across the top (e.g. 3Y → 2010–2013, 2013–2016). Gauges reflect the latest complete window, or full history for All Time.</p>
+            </div>
+            <div class="window-selector">
+              <span class="bar-label">Window:</span>
+              <div class="period-btns" id="risk-period-btns">
+                <button class="period-btn" data-risk-period="3m">3M</button>
+                <button class="period-btn" data-risk-period="6m">6M</button>
+                <button class="period-btn" data-risk-period="1y">1Y</button>
+                <button class="period-btn" data-risk-period="3y">3Y</button>
+                <button class="period-btn" data-risk-period="5y">5Y</button>
+                <button class="period-btn" data-risk-period="7y">7Y</button>
+                <button class="period-btn" data-risk-period="10y">10Y</button>
+                <button class="period-btn active" data-risk-period="all">All</button>
+              </div>
+            </div>
+          </div>
+
+          <p class="risk-gauge-caption" id="risk-gauge-caption">Gauges: All Time (since inception)</p>
+
+          <div class="risk-grid">
+            <div class="risk-card">
+              <div class="risk-card-top">
+                <h3>Beta (β)</h3>
+                <span class="risk-badge" id="beta-badge">—</span>
+              </div>
+              <div class="gauge-wrap">
+                <canvas id="betaGauge"></canvas>
+                <p class="gauge-val" id="beta-value">—</p>
+              </div>
+              <p class="risk-desc">Volatility vs Nifty 50 · &lt;1 less volatile, &gt;1 more volatile</p>
+            </div>
+            <div class="risk-card">
+              <div class="risk-card-top">
+                <h3>Sharpe Ratio</h3>
+                <span class="risk-badge" id="sharpe-badge">—</span>
+              </div>
+              <div class="gauge-wrap">
+                <canvas id="sharpeGauge"></canvas>
+                <p class="gauge-val" id="sharpe-value">—</p>
+              </div>
+              <p class="risk-desc">Risk-adjusted return (Rf=6.5%) · Higher is better</p>
+            </div>
+            <div class="risk-card">
+              <div class="risk-card-top">
+                <h3>Sortino Ratio</h3>
+                <span class="risk-badge" id="sortino-badge">—</span>
+              </div>
+              <div class="gauge-wrap">
+                <canvas id="sortinoGauge"></canvas>
+                <p class="gauge-val" id="sortino-value">—</p>
+              </div>
+              <p class="risk-desc">Downside deviation adjusted · Higher is better</p>
+            </div>
+            <div class="risk-card">
+              <div class="risk-card-top">
+                <h3>Std Deviation</h3>
+                <span class="risk-badge" id="stddev-badge">—</span>
+              </div>
+              <div class="gauge-wrap">
+                <canvas id="stddevGauge"></canvas>
+                <p class="gauge-val" id="stddev-value">—</p>
+              </div>
+              <p class="risk-desc">Annualized volatility · Lower means more stable</p>
+            </div>
+          </div>
+
+          <div class="chart-card mt-4">
+            <div class="chart-card-header">
+              <h3 class="chart-title">Risk Metrics by Period <span class="chart-sub" id="risk-table-label"></span></h3>
+            </div>
+            <div class="table-scroll">
+              <table class="data-table risk-period-table" id="risk-period-table">
+                <thead id="risk-period-thead"></thead>
+                <tbody id="risk-period-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="chart-card mt-4">
+            <div class="chart-card-header">
+              <h3 class="chart-title">Drawdown Chart</h3>
+              <div class="drawdown-stat">
+                Max Drawdown: <strong id="drawdown-value" class="red-text">—</strong>
+                <span id="drawdown-period" class="muted-text"></span>
+              </div>
+            </div>
+            <div class="chart-wrap h-280">
+              <canvas id="drawdownChart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- ALPHA TAB -->
+        <div class="tab-pane" id="tab-alpha" role="tabpanel">
+          <div class="tab-intro-row">
+            <div>
+              <h3 class="section-heading">Alpha Analysis</h3>
+              <p class="section-desc">Year-by-year excess return of this fund vs the Nifty 50 benchmark, from the fund's
+                inception year to the current year.</p>
+            </div>
+            <div class="benchmark-label-wrap">
+              <span class="benchmark-chip" id="benchmark-chip-label">📊 Benchmark: —</span>
+            </div>
+          </div>
+
+          <div class="stats-grid" id="alpha-stats-grid">
+            <div class="stat-card">
+              <div class="stat-icon-wrap blue">📈</div>
+              <div class="stat-info">
+                <span class="stat-label">Average Annual Alpha</span>
+                <span class="stat-val" id="avg-alpha">—</span>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon-wrap green">✅</div>
+              <div class="stat-info">
+                <span class="stat-label">Years Outperformed</span>
+                <span class="stat-val" id="years-outperformed">—</span>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon-wrap teal">🎯</div>
+              <div class="stat-info">
+                <span class="stat-label">Consistency Score</span>
+                <span class="stat-val" id="consistency-score">—</span>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon-wrap purple">⚡</div>
+              <div class="stat-info">
+                <span class="stat-label">Best Alpha Year</span>
+                <span class="stat-val" id="best-alpha-year">—</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="chart-card">
+            <div class="chart-card-header">
+              <h3 class="chart-title">Year-by-Year Alpha vs Nifty 50</h3>
+              <div class="legend-inline">
+                <span class="legend-dot green"></span><span>Outperformed</span>
+                <span class="legend-dot red ml-8"></span><span>Underperformed</span>
+              </div>
+            </div>
+            <div class="chart-wrap h-320">
+              <canvas id="alphaChart"></canvas>
+            </div>
+          </div>
+
+          <div class="chart-card mt-4">
+            <h3 class="chart-title">Complete Alpha Data Table</h3>
+            <div class="table-scroll">
+              <table class="data-table" id="alpha-table">
+                <thead>
+                  <tr>
+                    <th>Year</th>
+                    <th>Fund Return</th>
+                    <th>Index</th>
+                    <th>Alpha</th>
+                    <th>Signal</th>
+                  </tr>
+                </thead>
+                <tbody id="alpha-tbody"></tbody>
+                <tfoot id="alpha-tfoot"></tfoot>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- PERIOD RETURNS TAB -->
+        <div class="tab-pane" id="tab-returns" role="tabpanel">
+          <div class="tab-intro-row">
+            <div>
+              <h3 class="section-heading">Period Returns Analysis</h3>
+              <p class="section-desc">Shows absolute return and compound annualized (average) return for standardized
+                investment horizons up to today.</p>
+            </div>
+          </div>
+          <div class="two-col-grid">
+            <div class="chart-card">
+              <h3 class="chart-title">Period Returns Summary</h3>
+
+              <!-- Absolute Returns: short horizons -->
+              <p class="section-desc" style="margin-bottom:8px;">Absolute returns for short-term horizons.</p>
+              <div class="table-scroll mt-4">
+                <table class="data-table" id="period-returns-abs-table">
+                  <thead>
+                    <tr>
+                      <th>Period</th>
+                      <th>Start Date</th>
+                      <th>Start NAV</th>
+                      <th>End NAV</th>
+                      <th>Absolute Return</th>
+                    </tr>
+                  </thead>
+                  <tbody id="period-returns-abs-tbody"></tbody>
+                </table>
+              </div>
+
+              <!-- Average Annualized: longer horizons -->
+              <p class="section-desc" style="margin-top:16px;margin-bottom:8px;">Average annualized returns for longer horizons.</p>
+              <div class="table-scroll mt-4">
+                <table class="data-table" id="period-returns-avg-table">
+                  <thead>
+                    <tr>
+                      <th>Period</th>
+                      <th>Start Date</th>
+                      <th>Start NAV</th>
+                      <th>End NAV</th>
+                      <th>Average (Annualized)</th>
+                    </tr>
+                  </thead>
+                  <tbody id="period-returns-avg-tbody"></tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="chart-card">
+              <h3 class="chart-title">Absolute vs Average Returns Comparison</h3>
+              <div class="chart-wrap h-320">
+                <canvas id="periodReturnsChart"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- YEARLY RETURNS TAB -->
+        <div class="tab-pane" id="tab-yearly" role="tabpanel">
+          <div class="tab-intro-row">
+            <div>
+              <h3 class="section-heading">Calendar Year Returns</h3>
+              <p class="section-desc">Year-by-year absolute return and compound annualized (average) return from the day
+                the fund started to the current year.</p>
+            </div>
+          </div>
+          <div class="two-col-grid">
+            <div class="chart-card">
+              <h3 class="chart-title">Yearly Performance Data</h3>
+              <div class="table-scroll">
+                <table class="data-table" id="yearly-returns-table">
+                  <thead>
+                    <tr>
+                      <th>Year</th>
+                      <th>Start Date</th>
+                      <th>End Date</th>
+                      <th>Start NAV</th>
+                      <th>End NAV</th>
+                      <th>Absolute Return</th>
+                      <th>Average (Annualized)</th>
+                    </tr>
+                  </thead>
+                  <tbody id="yearly-returns-tbody"></tbody>
+                </table>
+              </div>
+            </div>
+            <div class="chart-card">
+              <h3 class="chart-title">Year-by-Year Comparison Chart</h3>
+              <div class="chart-wrap h-320">
+                <canvas id="yearlyReturnsChart"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- RANKING TAB -->
+        <div class="tab-pane" id="tab-ranking" role="tabpanel">
+          <div class="tab-intro-row ranking-intro-row">
+            <div class="ranking-intro-text">
+              <h3 class="section-heading">Mutual Fund Leaderboard</h3>
+              <p class="section-desc" id="ranking-intro-desc">All Direct Growth mutual funds ranked by <strong>Rolling 3‑Year CAGR Consistency</strong> — average of all 3‑year rolling window CAGRs. Only funds with at least 5 years of history are ranked.</p>
+            </div>
+            <div class="ranking-controls">
+              <select id="ranking-category-select" class="period-btn ranking-category-select">
+                <option value="all">All Categories</option>
+                <option value="all equity">All Equity</option>
+                <option value="flexi">Flexi Cap</option>
+                <option value="large">Large Cap</option>
+                <option value="mid">Mid Cap</option>
+                <option value="small">Small Cap</option>
+                <option value="multi">Multi Cap</option>
+                <option value="elss">ELSS (Tax Saver)</option>
+                <option value="hybrid">Hybrid</option>
+                <option value="debt">Debt</option>
+                <option value="index">Index Funds</option>
+                <option value="defence">Defence</option>
+                <option value="sectoral">Sectoral</option>
+                <option value="thematic">Thematic</option>
+                <option value="contra">Contra</option>
+              </select>
+            </div>
+          </div>
+
+
+
+          <!-- Progress bar area (initial fetch) -->
+          <div id="ranking-progress-area" class="ranking-progress-area" hidden>
+            <div class="chart-card ranking-progress-card">
+              <div class="ranking-progress-header">
+                <div class="spinner-ring ranking-progress-spinner"></div>
+                <span id="ranking-progress-text" class="ranking-progress-text">Fetching fund data…</span>
+              </div>
+              <div class="ranking-progress-track">
+                <div id="ranking-progress-bar" class="ranking-progress-fill"></div>
+              </div>
+              <div class="ranking-progress-meta">
+                <span id="ranking-progress-count">0 / 0 funds</span>
+                <span id="ranking-progress-ranked">0 ranked</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Period re-ranking progress overlay -->
+          <div id="ranking-period-area" class="ranking-progress-area" hidden>
+            <div class="chart-card ranking-progress-card ranking-period-card">
+              <div class="ranking-progress-header">
+                <div class="spinner-ring ranking-progress-spinner"></div>
+                <span id="ranking-period-text" class="ranking-progress-text">Computing period ranking…</span>
+                <button type="button" id="ranking-period-stop-btn" class="period-stop-btn" aria-label="Stop period ranking">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="4" y="4" width="16" height="16" rx="2"/></svg>
+                  Stop
+                </button>
+              </div>
+              <div class="ranking-progress-track">
+                <div id="ranking-period-bar" class="ranking-progress-fill" style="background: linear-gradient(90deg, var(--accent-teal), var(--accent-blue))"></div>
+              </div>
+              <div class="ranking-progress-meta">
+                <span id="ranking-period-count">0 / 0 funds</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="chart-card">
+            <h3 class="chart-title">Leaderboard <span class="chart-sub" id="ranking-table-label">(Ranked by Rolling 3Y CAGR Consistency)</span></h3>
+            <div class="table-scroll table-scroll-ranking mt-4">
+              <table class="data-table" id="ranking-table">
+                <thead>
+                  <tr>
+                    <th>Rank</th>
+                    <th>Code</th>
+                    <th>Fund Name</th>
+                    <th>Type</th>
+                    <th id="ranking-rolling-header">Rolling Return</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="ranking-tbody">
+                  <tr>
+                    <td colspan="6" style="text-align:center;color:var(--text-muted);padding:32px">Ranking will begin automatically when this tab loads…</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div id="ranking-load-more-container" class="ranking-load-more-wrap" hidden>
+              <button type="button" id="ranking-load-more-btn" class="back-btn ranking-load-more-btn">
+                <span>Show More Funds</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- COMPARE TAB -->
+        <div class="tab-pane" id="tab-compare" role="tabpanel">
+          <div class="tab-intro-row">
+            <div>
+              <h3 class="section-heading">Compare Mutual Funds</h3>
+              <p class="section-desc">Select two funds to compare them side-by-side across all analysis metrics — NAV,
+                CAGR, rolling returns, risk, alpha, and more.</p>
+            </div>
+          </div>
+
+          <!-- Compare Search Row -->
+          <div class="compare-search-row">
+            <div class="compare-search-col">
+              <label class="compare-label">Fund A</label>
+              <div class="compare-search-container">
+                <div class="search-input-wrap compact" id="cmp-search-wrap-a">
+                  <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2">
+                    <circle cx="11" cy="11" r="8" />
+                    <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                  </svg>
+                  <input type="text" id="cmp-search-a" class="search-input" placeholder="Search Fund A…"
+                    autocomplete="off" spellcheck="false" />
+                  <div class="search-spinner" id="cmp-spinner-a">
+                    <div class="spinner-ring"></div>
+                  </div>
+                </div>
+                <div class="search-dropdown" id="cmp-dropdown-a" role="listbox"></div>
+              </div>
+              <div class="compare-fund-chip" id="cmp-chip-a" style="display:none">
+                <span class="chip-name" id="cmp-chip-name-a"></span>
+                <button class="chip-clear" id="cmp-clear-a" aria-label="Clear Fund A">✕</button>
+              </div>
+            </div>
+
+            <div class="compare-vs-badge">VS</div>
+
+            <div class="compare-search-col">
+              <label class="compare-label">Fund B</label>
+              <div class="compare-search-container">
+                <div class="search-input-wrap compact" id="cmp-search-wrap-b">
+                  <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2">
+                    <circle cx="11" cy="11" r="8" />
+                    <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                  </svg>
+                  <input type="text" id="cmp-search-b" class="search-input" placeholder="Search Fund B…"
+                    autocomplete="off" spellcheck="false" />
+                  <div class="search-spinner" id="cmp-spinner-b">
+                    <div class="spinner-ring"></div>
+                  </div>
+                </div>
+                <div class="search-dropdown" id="cmp-dropdown-b" role="listbox"></div>
+              </div>
+              <div class="compare-fund-chip" id="cmp-chip-b" style="display:none">
+                <span class="chip-name" id="cmp-chip-name-b"></span>
+                <button class="chip-clear" id="cmp-clear-b" aria-label="Clear Fund B">✕</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="compare-action-row" id="cmp-action-row">
+            <button class="compare-btn" id="cmp-run-btn" disabled>Compare Funds</button>
+            <button class="chip" id="cmp-reset-btn"
+              style="display:none; background:var(--bg-card); border:1px solid var(--border)">Reset Comparison</button>
+            <p class="compare-hint" id="cmp-hint">Select two funds above to begin comparison</p>
+          </div>
+
+          <!-- Compare Loading -->
+          <div id="cmp-loading" class="center-state" style="display:none">
+            <div class="big-spinner">
+              <div class="spinner-ring lg"></div>
+            </div>
+            <p class="state-text">Crunching numbers for both funds…</p>
+          </div>
+
+          <!-- Compare Results (dynamically rendered) -->
+          <div id="cmp-results" style="display:none">
+
+            <!-- Fund Info Cards -->
+            <div class="compare-info-cards" id="cmp-info-cards"></div>
+
+            <!-- NAV History -->
+            <div class="chart-card mt-4">
+              <div class="chart-card-header">
+                <h3 class="chart-title">NAV History Comparison</h3>
+                <div class="legend-inline">
+                  <span class="legend-dot blue"></span><span id="cmp-legend-a">Fund A</span>
+                  <span class="legend-dot teal ml-8"></span><span id="cmp-legend-b">Fund B</span>
+                </div>
+              </div>
+              <div class="chart-wrap h-320"><canvas id="cmpNavChart"></canvas></div>
+            </div>
+
+            <!-- CAGR Comparison -->
+            <div class="two-col-grid mt-4">
+              <div class="chart-card">
+                <h3 class="chart-title">CAGR Comparison</h3>
+                <div class="table-scroll">
+                  <table class="data-table" id="cmp-cagr-table">
+                    <thead>
+                      <tr>
+                        <th>Period</th>
+                        <th id="cmp-cagr-h-a">Fund A</th>
+                        <th id="cmp-cagr-h-b">Fund B</th>
+                      </tr>
+                    </thead>
+                    <tbody id="cmp-cagr-tbody"></tbody>
+                  </table>
+                </div>
+              </div>
+              <div class="chart-card">
+                <h3 class="chart-title">CAGR Chart</h3>
+                <div class="chart-wrap h-280"><canvas id="cmpCagrChart"></canvas></div>
+              </div>
+            </div>
+
+            <!-- Annual Returns -->
+            <div class="chart-card mt-4">
+              <div class="chart-card-header">
+                <h3 class="chart-title">Annual Returns Comparison</h3>
+              </div>
+              <div class="table-scroll mt-4">
+                <table class="data-table" id="cmp-annual-table">
+                  <thead>
+                    <tr>
+                      <th>Year</th>
+                      <th id="cmp-annual-h-a">Fund A</th>
+                      <th id="cmp-annual-h-b">Fund B</th>
+                    </tr>
+                  </thead>
+                  <tbody id="cmp-annual-tbody"></tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Rolling Returns -->
+            <div class="chart-card mt-4">
+              <div class="chart-card-header">
+                <h3 class="chart-title">Rolling Returns Comparison <span class="chart-sub" id="cmp-rolling-label">(3Y
+                    windows)</span></h3>
+                <div class="window-selector">
+                  <div class="period-btns" id="cmp-rolling-btns">
+                    <button class="period-btn" data-cmpwindow="1">1Y</button>
+                    <button class="period-btn active" data-cmpwindow="3">3Y</button>
+                    <button class="period-btn" data-cmpwindow="5">5Y</button>
+                    <button class="period-btn" data-cmpwindow="7">7Y</button>
+                    <button class="period-btn" data-cmpwindow="10">10Y</button>
+                  </div>
+                </div>
+              </div>
+              <div class="chart-wrap h-320"><canvas id="cmpRollingChart"></canvas></div>
+              
+              <div class="table-scroll mt-4">
+                <table class="data-table" id="cmp-rolling-table">
+                  <thead>
+                    <tr>
+                      <th>Period</th>
+                      <th id="cmp-rolling-h-a">Fund A</th>
+                      <th id="cmp-rolling-h-b">Fund B</th>
+                    </tr>
+                  </thead>
+                  <tbody id="cmp-rolling-tbody"></tbody>
+                  <tfoot id="cmp-rolling-tfoot"></tfoot>
+                </table>
+              </div>
+            </div>
+
+            <!-- Risk Metrics -->
+            <div class="chart-card mt-4">
+              <div class="chart-card-header">
+                <h3 class="chart-title">Risk Metrics Comparison <span class="chart-sub" id="cmp-risk-label">(All Time)</span></h3>
+                <div class="window-selector">
+                  <div class="period-btns" id="cmp-risk-btns">
+                    <button class="period-btn" data-cmprisk="6m">6M</button>
+                    <button class="period-btn" data-cmprisk="1y">1Y</button>
+                    <button class="period-btn" data-cmprisk="3y">3Y</button>
+                    <button class="period-btn" data-cmprisk="5y">5Y</button>
+                    <button class="period-btn" data-cmprisk="7y">7Y</button>
+                    <button class="period-btn" data-cmprisk="10y">10Y</button>
+                    <button class="period-btn active" data-cmprisk="all">All</button>
+                  </div>
+                </div>
+              </div>
+              <div class="table-scroll mt-4">
+                <table class="data-table" id="cmp-risk-table">
+                  <thead>
+                    <tr>
+                      <th>Metric</th>
+                      <th id="cmp-risk-h-a">Fund A</th>
+                      <th id="cmp-risk-h-b">Fund B</th>
+                    </tr>
+                  </thead>
+                  <tbody id="cmp-risk-tbody"></tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Alpha -->
+            <div class="chart-card mt-4">
+              <div class="chart-card-header">
+                <h3 class="chart-title">Alpha Comparison (vs UTI Nifty 50 · 120716)</h3>
+                <div class="legend-inline">
+                  <span class="legend-dot blue"></span><span id="cmp-alpha-legend-a">Fund A</span>
+                  <span class="legend-dot teal ml-8"></span><span id="cmp-alpha-legend-b">Fund B</span>
+                </div>
+              </div>
+              <div class="chart-wrap h-320"><canvas id="cmpAlphaChart"></canvas></div>
+              <div class="table-scroll mt-4">
+                <table class="data-table" id="cmp-alpha-table">
+                  <thead>
+                    <tr>
+                      <th>Year</th>
+                      <th id="cmp-alpha-t-h-a">Fund A (α)</th>
+                      <th id="cmp-alpha-t-h-b">Fund B (α)</th>
+                      <th>UTI Nifty 50 (120716)</th>
+                    </tr>
+                  </thead>
+                  <tbody id="cmp-alpha-tbody"></tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Drawdown -->
+            <div class="chart-card mt-4">
+              <div class="chart-card-header">
+                <h3 class="chart-title">Drawdown Comparison</h3>
+                <div class="legend-inline">
+                  <span class="legend-dot blue"></span><span id="cmp-dd-legend-a">Fund A</span>
+                  <span class="legend-dot red ml-8"></span><span id="cmp-dd-legend-b">Fund B</span>
+                </div>
+              </div>
+              <div class="chart-wrap h-280"><canvas id="cmpDrawdownChart"></canvas></div>
+            </div>
+
+            <!-- Period Returns -->
+            <div class="chart-card mt-4">
+              <h3 class="chart-title">Period Returns Comparison</h3>
+              <div class="table-scroll mt-4">
+                <table class="data-table" id="cmp-period-table">
+                  <thead>
+                    <tr>
+                      <th>Period</th>
+                      <th id="cmp-period-h-a">Fund A</th>
+                      <th id="cmp-period-h-b">Fund B</th>
+                    </tr>
+                  </thead>
+                  <tbody id="cmp-period-tbody"></tbody>
+                </table>
+              </div>
+            </div>
+
+          </div><!-- /cmp-results -->
+        </div><!-- /tab-compare -->
+
+      </div><!-- /tab-content-area -->
+    </div><!-- /tabs-section -->
+  </div><!-- /analysis-page -->
+
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+  <script type="module" src="js/app.js"></script>
+</body>
+
+</html>
